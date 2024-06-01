@@ -1,0 +1,7 @@
+button {
+  width: 100px;
+  height: 50px;
+  background-color: rgb(12, 12, 12);
+  border: 1px rgb(236, 115, 115) solid;
+  color: white;
+}
