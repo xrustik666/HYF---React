@@ -1,6 +1,5 @@
 * {
   box-sizing: border-box;
-  /*border: 1px solid;*/
 }
 
 .App {
@@ -30,25 +29,29 @@
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+
+  list-style-type: none;
 }
 
 .products--item {
-  list-style-type: none;
-  width: 30%;
+  flex: 1 1 30%; /* Изначальная ширина элемента */
 }
 
 .product {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
+
+  height: 100%;
 }
 
 .product--image {
-  max-width: 100%;
+  width: 300px;
   height: auto;
 }
 
 .product--title {
-  margin-top: 10px;
+  margin-top: auto;
   text-align: center;
 }
+

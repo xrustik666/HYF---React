@@ -9,15 +9,15 @@ import Products from './products';
 import './App.css';
 
 const App = () => {
-  const [selectedCategory, setSelectedCategory] = useState(categories[0]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
   };
 
-  const filteredProducts = products.filter(product => {
+  const filteredProducts = selectedCategory ? products.filter(product => {
     return `FAKE: ${product.category}` === selectedCategory;
-  });
+  }) : products;
 
   return (
     <div className="App">
