@@ -6,7 +6,13 @@ export default function useWindowDimension() {
     height: window.innerHeight
   })
 
-  useDebugValue(size.width > 1000 ? 'BIG' : size.width > 600 ? 'MEDIUM' : 'SMALL');
+  if (size.width > 1000) {
+    useDebugValue('BIG');
+  } else if (size.width > 600) {
+    useDebugValue('MEDIUM');
+  } else {
+    useDebugValue('SMALL');
+  }
 
   useEffect(() => {
     window.addEventListener('resize', () => {

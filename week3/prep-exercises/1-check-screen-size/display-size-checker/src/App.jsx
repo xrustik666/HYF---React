@@ -5,6 +5,7 @@ function App() {
 
   return (
     <div>
+      <h2>Screen dimensions</h2>
       <h3>Width: {width}</h3>
       <h3>Height: {height}</h3>
     </div>
