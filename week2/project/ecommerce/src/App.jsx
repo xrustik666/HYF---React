@@ -9,7 +9,7 @@ import Product from './Product';
 import './App.css';
 
 const App = () => {
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(false);
 
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
@@ -17,50 +17,72 @@ const App = () => {
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [loadingProducts, setLoadingProducts] = useState(false);
 
-  const [errorCategories, setErrorCategories] = useState(null);
-  const [errorProducts, setErrorProducts] = useState(null);
+  const [errorCategories, setErrorCategories] = useState(false);
+  const [errorProducts, setErrorProducts] = useState(false);
+  const [errorMessageCategories, setErrorMessageCategories] = useState('');
+  const [errorMessageProducts, setErrorMessageProducts] = useState('');
 
   // Download categories by API
-  useEffect(() => {
-    fetch('https://fakestoreapi.com/products/categories')
-      .then(response => response.json())
-      .then(data => {
-        setCategories(data);
-        setLoadingCategories(false);
-      })
-      .catch(error => {
-        setErrorCategories('Error fetching categories');
-        setLoadingCategories(false);
-      });
-  }, []);
+  const fetchCategories = async () => {
+    setLoadingCategories(true);
+    try {
+      const response = await fetch('https://fakestoreapi.com/products/categories');
+      if (!response.ok) {
+        throw new Error('Failed to fetch categories');
+      }
+      const data = await response.json();
+      setCategories(data);
+    } catch (error) {
+      setErrorCategories(true);
+      setErrorMessageCategories(error.message);
+    } finally {
+      setLoadingCategories(false);
+    }
+  };
 
   // Download products by API (based on a category that someone chooses)
-  useEffect(() => {
+  const fetchProducts = async () => {
     setLoadingProducts(true);
     const url = selectedCategory 
       ? `https://fakestoreapi.com/products/category/${selectedCategory}`
       : 'https://fakestoreapi.com/products';
 
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        setProducts(data);
-        setLoadingProducts(false);
-      })
-      .catch(error => {
-        setErrorProducts('Error fetching products');
-        setLoadingProducts(false);
-      });
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Error fetching products');
+      }
+      const data = await response.json();
+      setProducts(data);
+    } catch (error) {
+      setErrorProducts(true);
+      setErrorMessageProducts(error.message);
+    } finally {
+      setLoadingProducts(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    if (selectedCategory) {
+      fetchProducts(selectedCategory);
+    } else fetchProducts();
   }, [selectedCategory]);
 
   const handleCategoryClick = (category) => {
-    setSelectedCategory(category);
+    if (category !== selectedCategory) {
+      setSelectedCategory(category);
+    } else {
+      setSelectedCategory(null);
+    }
   };
 
   return (
     <BrowserRouter>
       <div className="App">
-        
         <Routes>
           <Route path="/" element={
             <>
@@ -68,7 +90,7 @@ const App = () => {
               {loadingCategories ? (
                 <p>Loading categories...</p>
               ) : errorCategories ? (
-                <p>{errorCategories}</p>
+                <p>{errorMessageCategories}</p>
               ) : (
                 <Categories
                   categories={categories}
@@ -79,7 +101,7 @@ const App = () => {
               {loadingProducts ? (
                 <p>Loading products...</p>
               ) : errorProducts ? (
-                <p>{errorProducts}</p>
+                <p>{errorMessageProducts}</p>
               ) : (
                 <Products products={products} />
               )}

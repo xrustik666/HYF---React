@@ -9,23 +9,29 @@ const Product = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch(`https://fakestoreapi.com/products/${id}`)
-      .then(response => response.json())
-      .then(data => {
+    const fetchProduct = async () => {
+      try {
+        const response = await fetch(`https://fakestoreapi.com/products/${id}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch product details');
+        }
+        const data = await response.json();
         setProduct(data);
+      } catch (error) {
+        setError(error.message);
+      } finally {
         setLoading(false);
-      })
-      .catch(error => {
-        setError('Error fetching product details');
-        setLoading(false);
-      });
+      }
+    };
+  
+    fetchProduct();
   }, [id]);
 
   if (loading) return <p>...Loading info about the product...</p>;
   if (error) return <p>{error}</p>;
 
   return (
-    <div clas = "product-details">
+    <div className = "product-details">
       <h2>{product.title}</h2>
       <div className = "product-description">
         <p>{product.description}</p>
