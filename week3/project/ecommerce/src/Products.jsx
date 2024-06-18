@@ -1,8 +1,14 @@
 import { Link } from 'react-router-dom';
 import { useFavorites } from './FavoritesContext';
+import useFetch from './useFetch';
 
-const Products = ({ products }) => {
+const Products = ({ selectedCategory }) => {
   const { favorites, addFavorite, removeFavorite } = useFavorites();
+  const url = selectedCategory
+    ? `https://fakestoreapi.com/products/category/${selectedCategory}`
+    : 'https://fakestoreapi.com/products';
+
+  const { data: products, loading, error } = useFetch(url);
 
   const isFavorite = (id) => favorites.includes(id);
 
@@ -13,6 +19,9 @@ const Products = ({ products }) => {
       addFavorite(product.id, product);
     }
   };
+
+  if (loading) return <p>Loading products...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <ul className="products">
@@ -25,7 +34,6 @@ const Products = ({ products }) => {
               <div className="heart heart--regular">♡</div>
             )}
           </div>
-
           <Link to={`/product/${product.id}`}>
             <div className="product">
               <img className="product--image" src={product.image} alt={product.title} />

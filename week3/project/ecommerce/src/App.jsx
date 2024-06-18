@@ -42,12 +42,12 @@ const App = () => {
   };
 
   // Download products by API (based on a category that someone chooses)
-  const fetchProducts = async () => {
+  const fetchProducts = async (category) => {
     setLoadingProducts(true);
-    const url = selectedCategory 
-      ? `https://fakestoreapi.com/products/category/${selectedCategory}`
+    const url = category
+      ? `https://fakestoreapi.com/products/category/${category}`
       : 'https://fakestoreapi.com/products';
-
+  
     try {
       const response = await fetch(url);
       if (!response.ok) {
@@ -70,7 +70,9 @@ const App = () => {
   useEffect(() => {
     if (selectedCategory) {
       fetchProducts(selectedCategory);
-    } else fetchProducts();
+    } else {
+      fetchProducts();
+    }
   }, [selectedCategory]);
 
   const handleCategoryClick = (category) => {
