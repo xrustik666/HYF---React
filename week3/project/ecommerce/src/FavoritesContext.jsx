@@ -7,13 +7,11 @@ export const FavoritesProvider = ({ children }) => {
   const [productsData, setProductsData] = useState({});
 
   const addFavorite = (id, productData) => {
-    console.log('Adding favorite:', id, productData);
     setFavorites([...favorites, id]);
     setProductsData({ ...productsData, [id]: productData });
   };
 
   const removeFavorite = (id) => {
-    console.log('Removing favorite:', id);
     setFavorites(favorites.filter((favoriteId) => favoriteId !== id));
     const updatedProductsData = { ...productsData };
     delete updatedProductsData[id];
